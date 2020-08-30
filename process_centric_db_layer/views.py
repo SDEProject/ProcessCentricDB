@@ -15,27 +15,19 @@ class SaveProcessCentricDBView(View):
         body = request.body.decode('utf-8')
         parameters = json.loads(body)
 
-        print(parameters)
-        context = parameters['context']
         request_parameters = parameters['request_parameters']
 
-
-        response_query = requests.get(
-            f"http://{settings.SERVICE_QUERY_SELECTION_HOST}:{settings.SERVICE_QUERY_SELECTION_PORT}/{settings.SERVICE_QUERY_SELECTION}/query_selection",
-            context)
-        query = json.loads(response_query.content)['query']
         intent_name = request_parameters['intentName']
         type = request_parameters['type']
 
-        parameters['query'] = query
         print(parameters)
 
         if 'type' in request_parameters:
             if intent_name == 'save':
                 if type == 'search':
-                    response = requests.post(f"http://{settings.SERVICE_BUSINESS_LOGIC_DB_HOST}:{settings.SERVICE_BUSINESS_LOGIC_DB_PORT}/{settings.SERVICE_BUSINESS_LOGIC_DB}/search/", None, parameters)
+                    response = requests.post(f"http://{settings.MYDB_HOST}:{settings.SERVICE_BUSINESS_LOGIC_DB_PORT}/{settings.SERVICE_BUSINESS_LOGIC_DB}/search/", None, parameters)
                 elif type == 'result':
-                    response = requests.post(f"http://{settings.SERVICE_BUSINESS_LOGIC_DB_HOST}:{settings.SERVICE_BUSINESS_LOGIC_DB_PORT}/{settings.SERVICE_BUSINESS_LOGIC_DB}/result/", None, parameters)
+                    response = requests.post(f"http://{settings.MYDB_HOST}:{settings.SERVICE_BUSINESS_LOGIC_DB_PORT}/{settings.SERVICE_BUSINESS_LOGIC_DB}/result/", None, parameters)
                 else:
                     response = HttpResponseBadRequest(f"BAD REQUEST: unknown {type} for type parameter. Try search or result.")
                     return HttpResponseBadRequest(response)
@@ -55,10 +47,10 @@ class RetrieveProcessCentricDBView(View):
             if intent_name == 'retrieve':
                 if type == 'search':
                     response = requests.get(
-                        f"http://{settings.SERVICE_BUSINESS_LOGIC_DB_HOST}:{settings.SERVICE_BUSINESS_LOGIC_DB_PORT}/{settings.SERVICE_BUSINESS_LOGIC_DB}/search/", parameters)
+                        f"http://{settings.MYDB_HOST}:{settings.SERVICE_BUSINESS_LOGIC_DB_PORT}/{settings.SERVICE_BUSINESS_LOGIC_DB}/search/", parameters)
                 elif type == 'result':
                     response = requests.get(
-                        f"http://{settings.SERVICE_BUSINESS_LOGIC_DB_HOST}:{settings.SERVICE_BUSINESS_LOGIC_DB_PORT}/{settings.SERVICE_BUSINESS_LOGIC_DB}/result/", parameters)
+                        f"http://{settings.MYDB_HOST}:{settings.SERVICE_BUSINESS_LOGIC_DB_PORT}/{settings.SERVICE_BUSINESS_LOGIC_DB}/result/", parameters)
                 else:
                     response = HttpResponseBadRequest(
                         f"BAD REQUEST: unknown {type} for type parameter. Try search or result.")
@@ -80,7 +72,7 @@ class DeleteProcessCentricDBView(View):
             if intent_name == 'delete':
                 if type == 'search' or type == 'result':
                     response = requests.post(
-                        f"http://{settings.SERVICE_BUSINESS_LOGIC_DB_HOST}:{settings.SERVICE_BUSINESS_LOGIC_DB_PORT}/{settings.SERVICE_BUSINESS_LOGIC_DB}/delete/", None,
+                        f"http://{settings.MYDB_HOST}:{settings.SERVICE_BUSINESS_LOGIC_DB_PORT}/{settings.SERVICE_BUSINESS_LOGIC_DB}/delete/", None,
                         parameters)
                 else:
                     response = HttpResponseBadRequest(
