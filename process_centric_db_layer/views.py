@@ -82,4 +82,4 @@ class DeleteProcessCentricDBView(View):
             response = HttpResponseBadRequest(f"BAD REQUEST: type parameter not defined.")
             return HttpResponseBadRequest(response)
 
-        return JsonResponse(response.json(), safe=False)
+        return JsonResponse(response.json(), safe=False, status=response.status_code)
