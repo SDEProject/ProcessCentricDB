@@ -20,8 +20,6 @@ class SaveProcessCentricDBView(View):
         intent_name = request_parameters['intentName']
         type = request_parameters['type']
 
-        print(parameters)
-
         if 'type' in request_parameters:
             if intent_name == 'save':
                 if type == 'search':
@@ -29,11 +27,12 @@ class SaveProcessCentricDBView(View):
                 elif type == 'result':
                     response = requests.post(f"http://{settings.SERVICE_BUSINESS_LOGIC_DB_HOST}:{settings.SERVICE_BUSINESS_LOGIC_DB_PORT}/{settings.SERVICE_BUSINESS_LOGIC_DB}/result/", None, parameters)
                 else:
-                    response = HttpResponseBadRequest(f"BAD REQUEST: unknown {type} for type parameter. Try search or result.")
-                    return HttpResponseBadRequest(response)
+                    response = ResponseTemplate.response_bad_request_message(type)
+                    return JsonResponse(response, status=400)
         else:
-            response = HttpResponseBadRequest(f"BAD REQUEST: type parameter not defined.")
-            return HttpResponseBadRequest(response)
+            response = ResponseTemplate.response_bad_request_message(type)
+            return JsonResponse(response, status=400)
+
         return JsonResponse(response.json(), safe=False)
 
 
@@ -52,12 +51,11 @@ class RetrieveProcessCentricDBView(View):
                     response = requests.get(
                         f"http://{settings.SERVICE_BUSINESS_LOGIC_DB_HOST}:{settings.SERVICE_BUSINESS_LOGIC_DB_PORT}/{settings.SERVICE_BUSINESS_LOGIC_DB}/result/", parameters)
                 else:
-                    response = HttpResponseBadRequest(
-                        f"BAD REQUEST: unknown {type} for type parameter. Try search or result.")
-                    return HttpResponseBadRequest(response)
+                    response = ResponseTemplate.response_bad_request_message(type)
+                    return JsonResponse(response, status=400)
         else:
-            response = HttpResponseBadRequest(f"BAD REQUEST: type parameter not defined.")
-            return HttpResponseBadRequest(response)
+            response = ResponseTemplate.response_bad_request_message(type)
+            return JsonResponse(response, status=400)
 
         return JsonResponse(response.json(), safe=False)
 
@@ -75,11 +73,41 @@ class DeleteProcessCentricDBView(View):
                         f"http://{settings.SERVICE_BUSINESS_LOGIC_DB_HOST}:{settings.SERVICE_BUSINESS_LOGIC_DB_PORT}/{settings.SERVICE_BUSINESS_LOGIC_DB}/delete/", None,
                         parameters)
                 else:
-                    response = HttpResponseBadRequest(
-                        f"BAD REQUEST: unknown {type} for type parameter. Try search or result.")
-                    return HttpResponseBadRequest(response)
+                    response = ResponseTemplate.response_bad_request_message(type)
+                    return JsonResponse(response, status=400)
         else:
-            response = HttpResponseBadRequest(f"BAD REQUEST: type parameter not defined.")
-            return HttpResponseBadRequest(response)
-
+            response = ResponseTemplate.response_bad_request_message(type)
+            return JsonResponse(response, status=400)
         return JsonResponse(response.json(), safe=False, status=response.status_code)
+
+class ResponseTemplate:
+    @staticmethod
+    def response_bad_request_templates(type):
+        messages = []
+        message = ""
+        if type:
+            message += f"BAD REQUEST: unknown {type} for type parameter. Try search or result."
+        else:
+            message += f"BAD REQUEST: type parameter not defined.\nTry to use the following sentences:\n"
+            message += f"- 'Save all results', 'Save the search' or 'Save the first result'\n"
+            message += f"- 'Delete all results', 'Delete all searches', 'Delete first result', 'Delete result with id 1'," \
+                       f" 'Delete first search' or 'Delete search with id 1'\n"
+            message += f"- 'Retrieve all results', 'Retrieve the first result', 'Give me the first local traditional shop result' or" \
+                       f"'Retrieve the first search'\n"
+
+        messages.append(message)
+
+        return messages
+
+    @staticmethod
+    def response_bad_request_message(type):
+        message = {
+            "fulfillmentMessages": [
+                {
+                    "text": {
+                        "text": ResponseTemplate.response_bad_request_templates(type)
+                    }
+                }
+            ]
+        }
+        return message
