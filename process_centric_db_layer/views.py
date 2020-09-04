@@ -92,7 +92,7 @@ class ResponseTemplate:
             message += f"- 'Save all results', 'Save the search' or 'Save the first result'\n"
             message += f"- 'Delete all results', 'Delete all searches', 'Delete first result', 'Delete result with id 1'," \
                        f" 'Delete first search' or 'Delete search with id 1'\n"
-            message += f"- 'Retrieve all results', 'Retrieve the first result', 'Give me the first local traditional shop result' or" \
+            message += f"- 'Retrieve all results', 'Retrieve the first result', 'Give me the first local traditional shop result' or " \
                        f"'Retrieve the first search'\n"
 
         messages.append(message)
