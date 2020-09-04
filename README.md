@@ -4,6 +4,7 @@ Indeed, it forwards the HTTP requests to the Business Logic DB layer choosing th
 The path changes based on the type of the operation, such as save, retrieve and delete. 
 
 The information about the API are available in the [Wiki page](https://github.com/SDEProject/ProcessCentricDB/wiki).
+The service is running at [process-centric-db-layer.herokuapp.com](https://process-centric-db-layer.herokuapp.com).
 
 You can test Travelando project using [Travelando bot](http://t.me/TravelandoBot). 
 
