@@ -33,7 +33,7 @@ class SaveProcessCentricDBView(View):
             response = ResponseTemplate.response_bad_request_message(type)
             return JsonResponse(response, status=400)
 
-        return JsonResponse(response.json(), safe=False)
+        return JsonResponse(response.json(), safe=False, status=response.status_code)
 
 
 class RetrieveProcessCentricDBView(View):
@@ -57,7 +57,7 @@ class RetrieveProcessCentricDBView(View):
             response = ResponseTemplate.response_bad_request_message(type)
             return JsonResponse(response, status=400)
 
-        return JsonResponse(response.json(), safe=False)
+        return JsonResponse(response.json(), safe=False, status=response.status_code)
 
 class DeleteProcessCentricDBView(View):
     def post(self, request):
