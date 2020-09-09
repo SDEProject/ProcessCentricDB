@@ -14,7 +14,7 @@ class SaveProcessCentricDBView(View):
     def post(self, request):
         body = request.body.decode('utf-8')
         parameters = json.loads(body)
-
+        print(f"Save parameters: {parameters}")
         request_parameters = parameters['request_parameters']
 
         intent_name = request_parameters['intentName']
@@ -63,6 +63,8 @@ class DeleteProcessCentricDBView(View):
     def post(self, request):
         body = request.body.decode('utf-8')
         parameters = json.loads(body)
+
+        print(f"Delete parameters: {parameters}")
         intent_name = parameters['intentName']
         type = parameters['type']
 
